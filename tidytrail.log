@@ -23,3 +23,8 @@
 2026-06-09 05:05:12 | INFO | Moved: D:\Users\elev1\Downloads\claude_animated.lottie -> D:\Users\elev1\Downloads\images\claude_animated.lottie
 2026-06-09 05:05:21 | INFO | Undone: D:\Users\elev1\Downloads\images\claude_animated.lottie -> D:\Users\elev1\Downloads\claude_animated.lottie
 2026-06-09 05:06:03 | INFO | Undone: D:\Users\elev1\Downloads\images\454115a8-f911-4533-ab7a-f7523c240d61.lottie -> D:\Users\elev1\Downloads\454115a8-f911-4533-ab7a-f7523c240d61.lottie
+2026-06-09 05:22:19 | INFO | Moved: \test.txt -> \downloads\docs\test.txt
+2026-06-09 05:22:19 | WARNING | Failed to move \test.txt: [WinError 2] The system cannot find the file specified
+2026-06-09 05:22:19 | INFO | Deleted trash file: C:\Users\elev1\AppData\Local\Temp\pytest-of-elev1\pytest-15\test_clean_trash0\test.tmp
+2026-06-09 05:23:06 | INFO | Deleted trash file: C:\Users\elev1\AppData\Local\Temp\pytest-of-elev1\pytest-16\test_clean_trash0\test.tmp
+2026-06-09 05:23:21 | INFO | Deleted trash file: C:\Users\elev1\AppData\Local\Temp\pytest-of-elev1\pytest-17\test_clean_trash0\test.tmp
