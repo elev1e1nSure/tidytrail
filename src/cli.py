@@ -119,7 +119,7 @@ def run_interactive():
         except Exception as e:
             console.print(f"[red]Error:[/red] {e}")
         
-        console.input("\n[dim]Press Enter to continue...[/dim]")
+        input("\n[dim]Press Enter to continue...[/dim]")
 
 
 def get_default_downloads() -> Path:
