@@ -1,20 +1,20 @@
 # TidyTrail
 
-Консольная утилита для анализа и сортировки папки загрузок.
+CLI tool for analyzing and sorting download folders (and more).
 
-## Установка
+## Install
 
 ```bash
 pip install -e .
 ```
 
-## Быстрый старт
+## Quick Start
 
 ```bash
-# Интерактивный режим (запуск без аргументов)
+# Interactive mode (run without args)
 tidytrail
 
-# Или используй команды напрямую
+# Or use commands directly
 tidytrail preview
 tidytrail sort
 tidytrail dupes
@@ -22,40 +22,40 @@ tidytrail old -d 90
 tidytrail clean
 ```
 
-## Команды
+## Commands
 
-| Команда | Описание |
-|---------|----------|
-| `preview` | Показать план сортировки |
-| `sort` | Разложить файлы по папкам |
-| `dupes` | Найти дубликаты (MD5) |
-| `old` | Показать старые файлы |
-| `clean` | Удалить мусор и пустые папки |
+| Command | Description |
+|---------|-------------|
+| `preview` | Show sorting plan |
+| `sort` | Organize files into folders |
+| `dupes` | Find duplicates (MD5) |
+| `old` | Show old files |
+| `clean` | Remove trash and empty folders |
 
-## Опции
+## Options
 
-- `-r, --recursive` — сканировать вложенные папки
-- `-d, --days N` — количество дней для команды `old`
-- `-y, --yes` — пропустить подтверждение
-- `-n, --dry-run` — показать план без выполнения
+- `-r, --recursive` — scan subdirectories
+- `-d, --days N` — days for `old` command
+- `-y, --yes` — skip confirmation
+- `-n, --dry-run` — show plan without executing
 
-## Категории
+## Categories
 
-- `images/` — картинки, фото, анимации
-- `docs/` — документы, PDF, Excel, Word
+- `images/` — photos, images, animations
+- `docs/` — documents, PDF, Excel, Word
 - `archives/` — zip, rar, 7z, tar
-- `video/` — видео
-- `audio/` — музыка
-- `code/` — исходный код
+- `video/` — video
+- `audio/` — music
+- `code/` — source code
 - `executables/` — exe, msi, dmg
 
-## Примеры
+## Examples
 
 ```bash
-tidytrail                    # интерактивное меню
-tidytrail preview            # показать план для Downloads
-tidytrail sort -r            # сортировать включая подпапки
-tidytrail dupes              # найти дубликаты
-tidytrail old -d 30          # файлы старше 30 дней
-tidytrail clean -r -y        # удалить мусор без подтверждения
+tidytrail                    # interactive menu
+tidytrail preview            # show plan for Downloads
+tidytrail sort -r            # sort including subfolders
+tidytrail dupes              # find duplicates
+tidytrail old -d 30          # files older than 30 days
+tidytrail clean -r -y        # clean trash without confirmation
 ```
