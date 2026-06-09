@@ -48,12 +48,17 @@ def _init_mimetypes():
     mimetypes.add_type("application/vnd.apple.keynote", ".key")
     mimetypes.add_type("application/vnd.apple.numbers", ".numbers")
     mimetypes.add_type("application/vnd.apple.pages", ".pages")
+    mimetypes.add_type("application/json", ".lottie")
     _mimetypes_initialized = True
 
 
 def get_category(file: Path) -> Category:
     """Determine category based on MIME type."""
     _init_mimetypes()
+    
+    # Special case for .lottie files (animations)
+    if file.suffix.lower() == ".lottie":
+        return Category.IMAGES
     
     mime_type, _ = mimetypes.guess_type(str(file))
     
