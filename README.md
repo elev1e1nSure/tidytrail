@@ -1,6 +1,6 @@
 # TidyTrail
 
-CLI tool for analyzing and sorting download folders (and more).
+CLI tool for cleaning up download folders. Sorts files, finds duplicates, cleans trash.
 
 ## Install
 
