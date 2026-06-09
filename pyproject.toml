@@ -1,0 +1,21 @@
+[project]
+name = "tidytrail"
+version = "0.1.0"
+description = "Download folder cleaner with sorting, duplicates detection, and cleanup"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "typer>=0.12.0",
+    "rich>=13.0.0",
+]
+
+[project.scripts]
+tidytrail = "tidytrail.cli:app"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]

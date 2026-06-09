@@ -1,0 +1,1 @@
+"""TidyTrail - Download folder cleaner."""
