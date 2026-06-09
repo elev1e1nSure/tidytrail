@@ -73,16 +73,16 @@ def prompt_deletion(groups: dict[str, list[FileInfo]]) -> int:
         sorted_files = sorted(file_list, key=lambda f: f.mtime, reverse=True)
         
         for i, f in enumerate(sorted_files):
-            console.print(f"  [{i+1}] {f.path.name}", escape=False)
+            print(f"  [{i+1}] {f.path.name}")
             console.print(f"      Size: {_format_size(f.size)} | Modified: {_format_date(f.mtime)}")
             console.print(f"      Path: {f.path.parent}")
         
-        console.print("")
-        console.print("  [n] - keep newest, delete old ones", escape=False)
-        console.print("  [o] - keep oldest, delete new ones", escape=False)
-        console.print("  [f] - keep first, delete rest", escape=False)
-        console.print("  [s] - keep all, skip", escape=False)
-        console.print("  [q] - exit", escape=False)
+        print("")
+        print("  [n] - keep newest, delete old ones")
+        print("  [o] - keep oldest, delete new ones")
+        print("  [f] - keep first, delete rest")
+        print("  [s] - keep all, skip")
+        print("  [q] - exit")
         
         choice = console.input("\nChoose action [n/o/f/s/q]: ").strip().lower() or "s"
         
