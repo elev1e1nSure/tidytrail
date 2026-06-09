@@ -77,11 +77,11 @@ def prompt_deletion(groups: dict[str, list[FileInfo]]) -> int:
             console.print(f"      Size: {_format_size(f.size)} | Modified: {_format_date(f.mtime)}")
             console.print(f"      Path: {f.path.parent}")
         
-        console.print(f"\n  [n]ewer - keep newest, delete others")
-        console.print(f"  [o]lder - keep oldest, delete others")
-        console.print(f"  [a]ll - keep first, delete others")
-        console.print(f"  [s]kip - keep all")
-        console.print(f"  [q]uit - exit")
+        console.print(f"\n  [n] - Оставить новый, удалить остальные")
+        console.print(f"  [o] - Оставить старый, удалить остальные")
+        console.print(f"  [a] - Оставить первый, удалить остальные")
+        console.print(f"  [s] - Оставить все (пропустить)")
+        console.print(f"  [q] - Выйти")
         
         choice = Prompt.ask(
             "Choose action",
