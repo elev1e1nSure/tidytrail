@@ -56,6 +56,12 @@ def get_category(file: Path) -> Category:
     """Determine category based on MIME type."""
     _init_mimetypes()
     
+    # Check custom rules first
+    from src.rules import get_custom_category
+    custom = get_custom_category(file.suffix.lower())
+    if custom:
+        return custom
+    
     # Special case for .lottie files (animations)
     if file.suffix.lower() == ".lottie":
         return Category.IMAGES

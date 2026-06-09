@@ -16,6 +16,7 @@ from src.sorter import execute_sort, plan_sort
 from src.stats import get_folder_stats, format_size
 from src.trash_cleaner import clean_trash
 from src.undo import undo_last_operation, load_history
+from src.rules import add_rule, remove_rule, list_rules
 
 app = typer.Typer(help="TidyTrail - Download folder cleaner")
 console = Console()
@@ -37,7 +38,8 @@ def run_interactive():
         console.print("  [5] 🧹 Clean  - Remove trash files")
         console.print("  [6] 📊 Stats  - Show folder statistics")
         console.print("  [7] ↩️  Undo   - Undo last sort")
-        console.print("  [8] ⚙️  Settings - Configure options")
+        console.print("  [8] 📐 Rules  - Custom categorization rules")
+        console.print("  [9] ⚙️  Settings - Configure options")
         console.print("")
         console.print("  [Enter] Exit")
         
@@ -50,13 +52,43 @@ def run_interactive():
         target_path = get_default_downloads()
         recursive = False
         
-        if choice == "8":
+        if choice == "9":
             console.print("\n[bold]Settings:[/bold]")
             console.print(f"  Target folder: {target_path}")
             r = console.input("  Recursive (y/n)? ").lower().strip() == "y"
             recursive = r
             console.print(f"  Recursive: {recursive}")
             console.print("[green]Settings updated![/green]")
+            continue
+        
+        if choice == "8":
+            console.print("\n[bold]Custom Rules:[/bold]")
+            rules = list_rules()
+            if rules:
+                console.print("  Current rules:")
+                for ext, cat in rules.items():
+                    console.print(f"    {ext} -> {cat}")
+            else:
+                console.print("  No custom rules.")
+            console.print("\n  [a]dd - Add rule")
+            console.print("  [r]emove - Remove rule")
+            console.print("  [b]ack - Back")
+            action = console.input("  Choice: ").strip().lower()
+            if action == "a":
+                ext = console.input("  Extension (.ext): ").strip()
+                console.print("  Categories: images, docs, archives, video, audio, code, executables, other")
+                cat = console.input("  Category: ").strip()
+                if add_rule(ext, cat):
+                    console.print("[green]Rule added![/green]")
+                else:
+                    console.print("[red]Invalid category[/red]")
+            elif action == "r":
+                ext = console.input("  Extension to remove: ").strip()
+                if remove_rule(ext):
+                    console.print("[green]Rule removed![/green]")
+                else:
+                    console.print("[yellow]Rule not found[/yellow]")
+            input("\nPress Enter to continue...")
             continue
         
         if choice == "7":
@@ -69,7 +101,7 @@ def run_interactive():
             input("\nPress Enter to continue...")
             continue
         
-        if choice not in ("1", "2", "3", "4", "5", "6", "7"):
+        if choice not in ("1", "2", "3", "4", "5", "6", "7", "8"):
             if choice != "":
                 console.print("[red]Invalid option[/red]")
             continue
