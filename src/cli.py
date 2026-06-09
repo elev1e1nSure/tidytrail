@@ -13,6 +13,7 @@ from src.models import FileInfo
 from src.old_files import find_old_files, print_old_files
 from src.scanner import scan_directory
 from src.sorter import execute_sort, plan_sort
+from src.stats import get_folder_stats, format_size
 from src.trash_cleaner import clean_trash
 
 app = typer.Typer(help="TidyTrail - Download folder cleaner")
@@ -33,7 +34,8 @@ def run_interactive():
         console.print("  [3] 🔍 Dupes  - Find and remove duplicates")
         console.print("  [4] 📅 Old    - Show old files")
         console.print("  [5] 🧹 Clean  - Remove trash files")
-        console.print("  [6] ⚙️  Settings - Configure options")
+        console.print("  [6] 📊 Stats  - Show folder statistics")
+        console.print("  [7] ⚙️  Settings - Configure options")
         console.print("")
         console.print("  [Enter] Exit")
         
@@ -46,7 +48,7 @@ def run_interactive():
         target_path = get_default_downloads()
         recursive = False
         
-        if choice == "6":
+        if choice == "7":
             console.print("\n[bold]Settings:[/bold]")
             console.print(f"  Target folder: {target_path}")
             r = console.input("  Recursive (y/n)? ").lower().strip() == "y"
@@ -55,7 +57,7 @@ def run_interactive():
             console.print("[green]Settings updated![/green]")
             continue
         
-        if choice not in ("1", "2", "3", "4", "5"):
+        if choice not in ("1", "2", "3", "4", "5", "6"):
             if choice != "":
                 console.print("[red]Invalid option[/red]")
             continue
@@ -64,7 +66,12 @@ def run_interactive():
             r = console.input("  Scan subdirectories (y/n)? ").lower().strip() == "y"
             recursive = r
         
-        console.print(f"\n[bold]Target:[/bold] {target_path}")
+        if choice == "6":
+            r = console.input("  Include subdirectories (y/n)? ").lower().strip() == "y"
+            recursive = r
+        
+        if choice != "6":
+            console.print(f"\n[bold]Target:[/bold] {target_path}")
         
         try:
             if choice == "1":
@@ -115,6 +122,18 @@ def run_interactive():
             elif choice == "5":
                 files_deleted, dirs_deleted = clean_trash(target_path, confirm=True, recursive=recursive)
                 console.print(f"\n[bold green]Done![/bold green] Files: {files_deleted}, Folders: {dirs_deleted}")
+                
+            elif choice == "6":
+                stats = get_folder_stats(target_path, recursive=recursive)
+                console.print(f"\n[bold]Statistics:[/bold]")
+                console.print(f"  Total files: {stats['total_files']}")
+                console.print(f"  Total size: {format_size(stats['total_size'])}")
+                console.print(f"\n[bold]By category:[/bold]")
+                for cat, count in sorted(stats['by_category'].items(), key=lambda x: -x[1]):
+                    console.print(f"  {cat.value}: {count}")
+                console.print(f"\n[bold]Top 10 largest files:[/bold]")
+                for f in stats['largest_files'][:10]:
+                    console.print(f"  {format_size(f['size'])} - {f['name']}")
                 
         except Exception as e:
             console.print(f"[red]Error:[/red] {e}")
