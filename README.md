@@ -1,6 +1,6 @@
 # TidyTrail
 
-Консольная утилита для анализа и сортировки папки загрузок (и не только).
+CLI tool for cleaning up download folders. Sorts files, finds duplicates, cleans trash.
 
 ## Install
 
