@@ -40,6 +40,7 @@ def _format_size(size: int) -> str:
 def preview(
     path: Path = typer.Argument(None, help="Directory to scan (default: Downloads folder)"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show all files including uncategorized"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Scan subdirectories"),
 ):
     """Show sorting plan (what will go where)."""
     if path is None:
@@ -48,7 +49,7 @@ def preview(
     console.print(f"[bold]Scanning:[/bold] {path.absolute()}")
     
     try:
-        scan = scan_directory(path)
+        scan = scan_directory(path, recursive=recursive)
     except FileNotFoundError as e:
         console.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)
@@ -73,6 +74,7 @@ def preview(
 def sort(
     path: Path = typer.Argument(None, help="Directory to sort (default: Downloads folder)"),
     dry_run: bool = typer.Option(False, "--dry-run", "-n", help="Preview without moving"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Scan subdirectories"),
 ):
     """Sort files into category folders."""
     if path is None:
@@ -81,7 +83,7 @@ def sort(
     console.print(f"[bold]Sorting:[/bold] {path.absolute()}")
     
     try:
-        scan = scan_directory(path)
+        scan = scan_directory(path, recursive=recursive)
     except FileNotFoundError as e:
         console.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)
@@ -103,6 +105,7 @@ def sort(
 @app.command()
 def dupes(
     path: Path = typer.Argument(None, help="Directory to scan (default: Downloads folder)"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Scan subdirectories"),
 ):
     """Find and remove duplicate files."""
     if path is None:
@@ -111,7 +114,7 @@ def dupes(
     console.print(f"[bold]Scanning for duplicates:[/bold] {path.absolute()}")
     
     try:
-        scan = scan_directory(path)
+        scan = scan_directory(path, recursive=recursive)
     except FileNotFoundError as e:
         console.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)
@@ -135,6 +138,7 @@ def dupes(
 def old(
     path: Path = typer.Argument(None, help="Directory to scan (default: Downloads folder)"),
     days: int = typer.Option(90, "--days", "-d", help="Files older than N days"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Scan subdirectories"),
 ):
     """Show files older than N days."""
     if path is None:
@@ -143,7 +147,7 @@ def old(
     console.print(f"[bold]Scanning:[/bold] {path.absolute()}")
     
     try:
-        scan = scan_directory(path)
+        scan = scan_directory(path, recursive=recursive)
     except FileNotFoundError as e:
         console.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)
@@ -156,6 +160,7 @@ def old(
 def clean(
     path: Path = typer.Argument(None, help="Directory to clean (default: Downloads folder)"),
     yes: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Scan subdirectories"),
 ):
     """Remove trash files and empty folders."""
     if path is None:
@@ -164,7 +169,7 @@ def clean(
     console.print(f"[bold]Cleaning:[/bold] {path.absolute()}")
     
     try:
-        files_deleted, dirs_deleted = clean_trash(path, confirm=not yes)
+        files_deleted, dirs_deleted = clean_trash(path, confirm=not yes, recursive=recursive)
     except FileNotFoundError as e:
         console.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)

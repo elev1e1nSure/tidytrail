@@ -7,8 +7,8 @@ from src.config import Category
 from src.models import FileInfo, ScanResult
 
 
-def scan_directory(path: Path) -> ScanResult:
-    """Scan directory for files (top-level only, ignores subdirectories)."""
+def scan_directory(path: Path, recursive: bool = False) -> ScanResult:
+    """Scan directory for files (top-level only by default, recursive if specified)."""
     if not path.exists():
         raise FileNotFoundError(f"Path does not exist: {path}")
     
@@ -18,7 +18,12 @@ def scan_directory(path: Path) -> ScanResult:
     files: list[FileInfo] = []
     categories: dict[Category, list[FileInfo]] = {cat: [] for cat in Category}
     
-    for item in path.iterdir():
+    if recursive:
+        iterator = path.rglob("*")
+    else:
+        iterator = path.iterdir()
+    
+    for item in iterator:
         if item.is_file() and not item.is_symlink():
             try:
                 stat = item.stat()

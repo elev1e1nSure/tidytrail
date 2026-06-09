@@ -12,11 +12,16 @@ console = Console()
 logger = get_logger()
 
 
-def find_trash_files(path: Path) -> list[Path]:
-    """Find trash files in directory (top-level only)."""
+def find_trash_files(path: Path, recursive: bool = False) -> list[Path]:
+    """Find trash files in directory."""
     trash: list[Path] = []
     
-    for item in path.iterdir():
+    if recursive:
+        iterator = path.rglob("*")
+    else:
+        iterator = path.iterdir()
+    
+    for item in iterator:
         if item.is_file():
             if item.suffix.lower() in TRASH_EXTENSIONS:
                 trash.append(item)
@@ -27,11 +32,16 @@ def find_trash_files(path: Path) -> list[Path]:
     return trash
 
 
-def find_empty_dirs(path: Path) -> list[Path]:
-    """Find empty directories (top-level only)."""
+def find_empty_dirs(path: Path, recursive: bool = False) -> list[Path]:
+    """Find empty directories."""
     empty: list[Path] = []
     
-    for item in path.iterdir():
+    if recursive:
+        iterator = path.rglob("*")
+    else:
+        iterator = path.iterdir()
+    
+    for item in iterator:
         if item.is_dir() and not item.is_symlink():
             try:
                 if not any(item.iterdir()):
@@ -42,10 +52,10 @@ def find_empty_dirs(path: Path) -> list[Path]:
     return empty
 
 
-def clean_trash(path: Path, confirm: bool = True) -> tuple[int, int]:
+def clean_trash(path: Path, confirm: bool = True, recursive: bool = False) -> tuple[int, int]:
     """Clean trash files and empty directories. Returns (files_deleted, dirs_deleted)."""
-    trash_files = find_trash_files(path)
-    empty_dirs = find_empty_dirs(path)
+    trash_files = find_trash_files(path, recursive=recursive)
+    empty_dirs = find_empty_dirs(path, recursive=recursive)
     
     if not trash_files and not empty_dirs:
         console.print("[green]No trash files or empty folders found.[/green]")
