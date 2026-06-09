@@ -19,6 +19,99 @@ app = typer.Typer(help="TidyTrail - Download folder cleaner")
 console = Console()
 
 
+def run_interactive():
+    """Interactive menu-driven mode."""
+    setup_logger()
+    
+    while True:
+        console.print("\n[bold cyan]=== TidyTrail ===[/bold cyan]")
+        console.print("[1] Preview - Show sorting plan")
+        console.print("[2] Sort - Organize files by category")
+        console.print("[3] Dupes - Find and remove duplicates")
+        console.print("[4] Old - Show old files")
+        console.print("[5] Clean - Remove trash files")
+        console.print("[6] Settings - Configure options")
+        console.print("[q] Quit")
+        
+        choice = console.input("\n[bold]Select option:[/bold] ")
+        
+        if choice.lower() == "q":
+            console.print("[green]Goodbye![/green]")
+            break
+        
+        target_path = get_default_downloads()
+        recursive = False
+        
+        if choice == "6":
+            console.print("\n[bold]Settings:[/bold]")
+            console.print(f"  Target folder: {target_path}")
+            r = console.input("  Recursive (y/n)? ").lower().strip() == "y"
+            recursive = r
+            console.print(f"  Recursive: {recursive}")
+            console.print("[green]Settings updated![/green]")
+            continue
+        
+        if choice not in ("1", "2", "3", "4", "5"):
+            console.print("[red]Invalid option[/red]")
+            continue
+        
+        if choice in ("3", "4", "5"):
+            r = console.input("  Scan subdirectories (y/n)? ").lower().strip() == "y"
+            recursive = r
+        
+        console.print(f"\n[bold]Target:[/bold] {target_path}")
+        
+        try:
+            if choice == "1":
+                scan = scan_directory(target_path, recursive=recursive)
+                plan = plan_sort(scan, target_path)
+                table = Table(title="Sorting Plan")
+                table.add_column("File", style="cyan")
+                table.add_column("Category", style="magenta")
+                table.add_column("Size", justify="right")
+                for src, dest in plan.items():
+                    file_info = next((f for f in scan.files if f.path == src), None)
+                    size_str = _format_size(file_info.size) if file_info else "?"
+                    table.add_row(src.name, dest.parent.name, size_str)
+                console.print(table)
+                console.print(f"\n[bold]Summary:[/bold] {len(plan)} files to sort")
+                
+            elif choice == "2":
+                scan = scan_directory(target_path, recursive=recursive)
+                plan = plan_sort(scan, target_path)
+                if not plan:
+                    console.print("[green]No files to sort.[/green]")
+                else:
+                    moved, skipped = execute_sort(plan, dry_run=False)
+                    console.print(f"\n[bold green]Done![/bold green] Moved: {moved}, Skipped: {skipped}")
+                    
+            elif choice == "3":
+                scan = scan_directory(target_path, recursive=recursive)
+                console.print(f"[cyan]Computing hashes for {len(scan.files)} files...[/cyan]")
+                groups = find_duplicates(scan.files)
+                if not groups:
+                    console.print("[green]No duplicates found.[/green]")
+                else:
+                    total_dupes = sum(len(g) - 1 for g in groups.values())
+                    console.print(f"[yellow]Found {len(groups)} groups with {total_dupes} duplicate files[/yellow]")
+                    deleted = prompt_deletion(groups)
+                    console.print(f"\n[bold green]Deleted {deleted} duplicate files.[/bold green]")
+                    
+            elif choice == "4":
+                days_str = console.input("  Days (default 90): ").strip()
+                days = int(days_str) if days_str else 90
+                scan = scan_directory(target_path, recursive=recursive)
+                old_files = find_old_files(scan.files, days)
+                print_old_files(old_files, days)
+                
+            elif choice == "5":
+                files_deleted, dirs_deleted = clean_trash(target_path, confirm=True, recursive=recursive)
+                console.print(f"\n[bold green]Done![/bold green] Files: {files_deleted}, Folders: {dirs_deleted}")
+                
+        except Exception as e:
+            console.print(f"[red]Error:[/red] {e}")
+
+
 def get_default_downloads() -> Path:
     """Get user's Downloads folder, fallback to current directory."""
     downloads = user_downloads_dir()
@@ -175,6 +268,13 @@ def clean(
         raise typer.Exit(1)
     
     console.print(f"\n[bold green]Done![/bold green] Files: {files_deleted}, Folders: {dirs_deleted}")
+
+
+@app.callback(invoke_without_command=True)
+def main(ctx: typer.Context):
+    """Launch TidyTrail in interactive mode (default)."""
+    if ctx.invoked_subcommand is None:
+        run_interactive()
 
 
 if __name__ == "__main__":
