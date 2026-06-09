@@ -9,6 +9,8 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from src.config import Category
 from src.logger import get_logger
 from src.models import FileInfo, ScanResult
+from src.undo import log_sort_operation
+from src.categorizer import get_category
 
 
 def _generate_unique_name(target_dir: Path, filename: str) -> Path:
@@ -51,7 +53,6 @@ def plan_sort(scan: ScanResult, target: Path) -> dict[Path, Path]:
 
 def _get_category_for_file(file_info: FileInfo) -> Category:
     """Get category for file based on extension."""
-    from src.categorizer import get_category
     return get_category(file_info.path)
 
 
@@ -60,8 +61,6 @@ def execute_sort(plan: dict[Path, Path], dry_run: bool = False) -> tuple[int, in
     logger = get_logger()
     moved = 0
     skipped = 0
-    
-    from src.undo import log_sort_operation
     
     with Progress(
         SpinnerColumn(),
