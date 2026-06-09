@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import typer
+from platformdirs import user_downloads_dir
 from rich.console import Console
 from rich.table import Table
 
@@ -18,6 +19,14 @@ app = typer.Typer(help="TidyTrail - Download folder cleaner")
 console = Console()
 
 
+def get_default_downloads() -> Path:
+    """Get user's Downloads folder, fallback to current directory."""
+    downloads = user_downloads_dir()
+    if downloads and Path(downloads).exists():
+        return Path(downloads)
+    return Path.cwd()
+
+
 def _format_size(size: int) -> str:
     """Format file size in human-readable form."""
     for unit in ["B", "KB", "MB", "GB"]:
@@ -29,10 +38,12 @@ def _format_size(size: int) -> str:
 
 @app.command()
 def preview(
-    path: Path = typer.Argument(".", help="Directory to scan"),
+    path: Path = typer.Argument(None, help="Directory to scan (default: Downloads folder)"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show all files including uncategorized"),
 ):
     """Show sorting plan (what will go where)."""
+    if path is None:
+        path = get_default_downloads()
     setup_logger()
     console.print(f"[bold]Scanning:[/bold] {path.absolute()}")
     
@@ -60,10 +71,12 @@ def preview(
 
 @app.command()
 def sort(
-    path: Path = typer.Argument(".", help="Directory to sort"),
+    path: Path = typer.Argument(None, help="Directory to sort (default: Downloads folder)"),
     dry_run: bool = typer.Option(False, "--dry-run", "-n", help="Preview without moving"),
 ):
     """Sort files into category folders."""
+    if path is None:
+        path = get_default_downloads()
     setup_logger()
     console.print(f"[bold]Sorting:[/bold] {path.absolute()}")
     
@@ -89,9 +102,11 @@ def sort(
 
 @app.command()
 def dupes(
-    path: Path = typer.Argument(".", help="Directory to scan"),
+    path: Path = typer.Argument(None, help="Directory to scan (default: Downloads folder)"),
 ):
     """Find and remove duplicate files."""
+    if path is None:
+        path = get_default_downloads()
     setup_logger()
     console.print(f"[bold]Scanning for duplicates:[/bold] {path.absolute()}")
     
@@ -118,10 +133,12 @@ def dupes(
 
 @app.command()
 def old(
-    path: Path = typer.Argument(".", help="Directory to scan"),
+    path: Path = typer.Argument(None, help="Directory to scan (default: Downloads folder)"),
     days: int = typer.Argument(90, help="Files older than N days"),
 ):
     """Show files older than N days."""
+    if path is None:
+        path = get_default_downloads()
     setup_logger()
     console.print(f"[bold]Scanning:[/bold] {path.absolute()}")
     
@@ -137,10 +154,12 @@ def old(
 
 @app.command()
 def clean(
-    path: Path = typer.Argument(".", help="Directory to clean"),
+    path: Path = typer.Argument(None, help="Directory to clean (default: Downloads folder)"),
     yes: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation"),
 ):
     """Remove trash files and empty folders."""
+    if path is None:
+        path = get_default_downloads()
     setup_logger()
     console.print(f"[bold]Cleaning:[/bold] {path.absolute()}")
     
