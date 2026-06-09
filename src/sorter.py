@@ -61,6 +61,8 @@ def execute_sort(plan: dict[Path, Path], dry_run: bool = False) -> tuple[int, in
     moved = 0
     skipped = 0
     
+    from src.undo import log_sort_operation
+    
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -73,6 +75,7 @@ def execute_sort(plan: dict[Path, Path], dry_run: bool = False) -> tuple[int, in
                 
                 if not dry_run:
                     shutil.move(str(src), str(dest))
+                    log_sort_operation(src, dest)
                 
                 logger.info(f"Moved: {src} -> {dest}")
                 moved += 1

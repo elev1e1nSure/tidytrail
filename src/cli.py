@@ -15,6 +15,7 @@ from src.scanner import scan_directory
 from src.sorter import execute_sort, plan_sort
 from src.stats import get_folder_stats, format_size
 from src.trash_cleaner import clean_trash
+from src.undo import undo_last_operation, load_history
 
 app = typer.Typer(help="TidyTrail - Download folder cleaner")
 console = Console()
@@ -35,7 +36,8 @@ def run_interactive():
         console.print("  [4] 📅 Old    - Show old files")
         console.print("  [5] 🧹 Clean  - Remove trash files")
         console.print("  [6] 📊 Stats  - Show folder statistics")
-        console.print("  [7] ⚙️  Settings - Configure options")
+        console.print("  [7] ↩️  Undo   - Undo last sort")
+        console.print("  [8] ⚙️  Settings - Configure options")
         console.print("")
         console.print("  [Enter] Exit")
         
@@ -48,7 +50,7 @@ def run_interactive():
         target_path = get_default_downloads()
         recursive = False
         
-        if choice == "7":
+        if choice == "8":
             console.print("\n[bold]Settings:[/bold]")
             console.print(f"  Target folder: {target_path}")
             r = console.input("  Recursive (y/n)? ").lower().strip() == "y"
@@ -57,7 +59,17 @@ def run_interactive():
             console.print("[green]Settings updated![/green]")
             continue
         
-        if choice not in ("1", "2", "3", "4", "5", "6"):
+        if choice == "7":
+            history = load_history()
+            if not history:
+                console.print("[yellow]No sort history to undo.[/yellow]")
+            else:
+                moved, failed = undo_last_operation()
+                console.print(f"[green]Undone: {moved} files, {failed} failed[/green]")
+            input("\nPress Enter to continue...")
+            continue
+        
+        if choice not in ("1", "2", "3", "4", "5", "6", "7"):
             if choice != "":
                 console.print("[red]Invalid option[/red]")
             continue
