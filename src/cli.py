@@ -70,16 +70,19 @@ def run_interactive():
             if choice == "1":
                 scan = scan_directory(target_path, recursive=recursive)
                 plan = plan_sort(scan, target_path)
-                table = Table(title="Sorting Plan")
-                table.add_column("File", style="cyan")
-                table.add_column("Category", style="magenta")
-                table.add_column("Size", justify="right")
-                for src, dest in plan.items():
-                    file_info = next((f for f in scan.files if f.path == src), None)
-                    size_str = _format_size(file_info.size) if file_info else "?"
-                    table.add_row(src.name, dest.parent.name, size_str)
-                console.print(table)
-                console.print(f"\n[bold]Summary:[/bold] {len(plan)} files to sort")
+                if not plan:
+                    console.print("[green]No files to sort.[/green]")
+                else:
+                    table = Table(title="Sorting Plan")
+                    table.add_column("File", style="cyan")
+                    table.add_column("Category", style="magenta")
+                    table.add_column("Size", justify="right")
+                    for src, dest in plan.items():
+                        file_info = next((f for f in scan.files if f.path == src), None)
+                        size_str = _format_size(file_info.size) if file_info else "?"
+                        table.add_row(src.name, dest.parent.name, size_str)
+                    console.print(table)
+                    console.print(f"\n[bold]Summary:[/bold] {len(plan)} files to sort")
                 
             elif choice == "2":
                 scan = scan_directory(target_path, recursive=recursive)
