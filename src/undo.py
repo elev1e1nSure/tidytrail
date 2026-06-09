@@ -40,29 +40,29 @@ def save_history(history: list[dict]):
 
 
 def undo_last_operation() -> tuple[int, int]:
-    """Undo the last sort operation. Returns (moved, failed)."""
+    """Undo all sort operations. Returns (moved, failed)."""
     history = load_history()
     if not history:
         return 0, 0
     
-    last = history.pop()
-    src = Path(last["source"])
-    dst = Path(last["destination"])
-    
     moved = 0
     failed = 0
     
-    if dst.exists() and src.parent != dst.parent:
-        try:
-            src.parent.mkdir(parents=True, exist_ok=True)
-            dst.rename(src)
-            logger.info(f"Undone: {dst} -> {src}")
-            moved += 1
-        except (OSError, PermissionError) as e:
-            logger.warning(f"Failed to undo: {e}")
-            failed += 1
+    for op in reversed(history):
+        src = Path(op["source"])
+        dst = Path(op["destination"])
+        
+        if dst.exists() and src.parent != dst.parent:
+            try:
+                src.parent.mkdir(parents=True, exist_ok=True)
+                dst.rename(src)
+                logger.info(f"Undone: {dst} -> {src}")
+                moved += 1
+            except (OSError, PermissionError) as e:
+                logger.warning(f"Failed to undo: {e}")
+                failed += 1
     
-    save_history(history)
+    clear_history()
     return moved, failed
 
 

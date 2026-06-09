@@ -100,6 +100,7 @@ def run_interactive():
             if not history:
                 console.print("[yellow]No sort history to undo.[/yellow]")
             else:
+                console.print(f"[yellow]Undoing {len(history)} files...[/yellow]")
                 moved, failed = undo_last_operation()
                 console.print(f"[green]Undone: {moved} files, {failed} failed[/green]")
             input("\nPress Enter to continue...")
