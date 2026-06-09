@@ -8,37 +8,54 @@
 pip install -e .
 ```
 
-## Использование
+## Быстрый старт
 
 ```bash
-tidytrail <command> [OPTIONS] [PATH]
+# Интерактивный режим (запуск без аргументов)
+tidytrail
+
+# Или используй команды напрямую
+tidytrail preview
+tidytrail sort
+tidytrail dupes
+tidytrail old -d 90
+tidytrail clean
 ```
 
-### Команды
+## Команды
 
-- **preview** — показать план сортировки
-- **sort** — разложить файлы по папкам
-- **dupes** — найти дубликаты (MD5)
-- **old N** — показать файлы старше N дней
-- **clean** — удалить мусор и пустые папки
+| Команда | Описание |
+|---------|----------|
+| `preview` | Показать план сортировки |
+| `sort` | Разложить файлы по папкам |
+| `dupes` | Найти дубликаты (MD5) |
+| `old` | Показать старые файлы |
+| `clean` | Удалить мусор и пустые папки |
 
-### Примеры
+## Опции
 
-```bash
-tidytrail ./Downloads --preview
-tidytrail ./Downloads --sort
-tidytrail ./Downloads --dupes
-tidytrail ./Downloads --old 90
-tidytrail ./Downloads --clean
-tidytrail ./Downloads --sort --dry-run
-```
+- `-r, --recursive` — сканировать вложенные папки
+- `-d, --days N` — количество дней для команды `old`
+- `-y, --yes` — пропустить подтверждение
+- `-n, --dry-run` — показать план без выполнения
 
 ## Категории
 
-- `images/` — картинки
-- `docs/` — документы
-- `archives/` — архивы
+- `images/` — картинки, фото, анимации
+- `docs/` — документы, PDF, Excel, Word
+- `archives/` — zip, rar, 7z, tar
 - `video/` — видео
-- `code/` — код
-- `audio/` — аудио
-- `executables/` — исполняемые файлы
+- `audio/` — музыка
+- `code/` — исходный код
+- `executables/` — exe, msi, dmg
+
+## Примеры
+
+```bash
+tidytrail                    # интерактивное меню
+tidytrail preview            # показать план для Downloads
+tidytrail sort -r            # сортировать включая подпапки
+tidytrail dupes              # найти дубликаты
+tidytrail old -d 30          # файлы старше 30 дней
+tidytrail clean -r -y        # удалить мусор без подтверждения
+```
