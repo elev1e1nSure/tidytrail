@@ -24,19 +24,23 @@ def run_interactive():
     setup_logger()
     
     while True:
-        console.print("\n[bold cyan]=== TidyTrail ===[/bold cyan]")
-        console.print("[1] Preview - Show sorting plan")
-        console.print("[2] Sort - Organize files by category")
-        console.print("[3] Dupes - Find and remove duplicates")
-        console.print("[4] Old - Show old files")
-        console.print("[5] Clean - Remove trash files")
-        console.print("[6] Settings - Configure options")
-        console.print("[q] Quit")
+        console.print("\n[bold cyan]╔══════════════════════════════════╗[/bold cyan]")
+        console.print("[bold cyan]║          TidyTrail               ║[/bold cyan]")
+        console.print("[bold cyan]╚══════════════════════════════════╝[/bold cyan]")
+        console.print("")
+        console.print("  [1] 📋 Preview - Show sorting plan")
+        console.print("  [2] 📁 Sort   - Organize files by category")
+        console.print("  [3] 🔍 Dupes  - Find and remove duplicates")
+        console.print("  [4] 📅 Old    - Show old files")
+        console.print("  [5] 🧹 Clean  - Remove trash files")
+        console.print("  [6] ⚙️  Settings - Configure options")
+        console.print("")
+        console.print("  [Enter] Exit")
         
-        choice = console.input("\n[bold]Select option:[/bold] ")
+        choice = console.input("\n[bold]›[/bold] ").strip().lower()
         
-        if choice.lower() == "q":
-            console.print("[green]Goodbye![/green]")
+        if choice in ("", "q", "quit", "exit"):
+            console.print("\n[dim]Goodbye![/dim]")
             break
         
         target_path = get_default_downloads()
@@ -52,7 +56,8 @@ def run_interactive():
             continue
         
         if choice not in ("1", "2", "3", "4", "5"):
-            console.print("[red]Invalid option[/red]")
+            if choice != "":
+                console.print("[red]Invalid option[/red]")
             continue
         
         if choice in ("3", "4", "5"):
