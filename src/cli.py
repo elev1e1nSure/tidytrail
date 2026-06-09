@@ -134,7 +134,7 @@ def dupes(
 @app.command()
 def old(
     path: Path = typer.Argument(None, help="Directory to scan (default: Downloads folder)"),
-    days: int = typer.Argument(90, help="Files older than N days"),
+    days: int = typer.Option(90, "--days", "-d", help="Files older than N days"),
 ):
     """Show files older than N days."""
     if path is None:
