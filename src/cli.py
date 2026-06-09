@@ -52,6 +52,10 @@ def run_interactive():
         target_path = get_default_downloads()
         recursive = False
         
+        custom_path = console.input("  Folder (Enter for Downloads): ").strip()
+        if custom_path:
+            target_path = Path(custom_path)
+        
         if choice == "9":
             console.print("\n[bold]Settings:[/bold]")
             console.print(f"  Target folder: {target_path}")

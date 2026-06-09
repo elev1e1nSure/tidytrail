@@ -30,13 +30,14 @@ tidytrail clean
 | `sort` | Organize files into folders |
 | `dupes` | Find duplicates (MD5) |
 | `old` | Show old files |
-| `clean` | Remove trash and empty folders |
+| `clean` | Remove trash files and empty folders |
 
 ## Options
 
+- `PATH` — folder to scan (default: Downloads)
 - `-r, --recursive` — scan subdirectories
 - `-d, --days N` — days for `old` command
-- `-y, --yes` — skip confirmation
+- `-y, --yes` — skip confirmation (for clean)
 - `-n, --dry-run` — show plan without executing
 
 ## Categories
@@ -54,8 +55,10 @@ tidytrail clean
 ```bash
 tidytrail                    # interactive menu
 tidytrail preview            # show plan for Downloads
+tidytrail preview "D:\MyFiles"  # scan specific folder
 tidytrail sort -r            # sort including subfolders
 tidytrail dupes              # find duplicates
 tidytrail old -d 30          # files older than 30 days
 tidytrail clean -r -y        # clean trash without confirmation
+tidytrail clean -n           # dry-run (show what would be deleted)
 ```
